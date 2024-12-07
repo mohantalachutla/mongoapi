@@ -1,0 +1,71 @@
+{
+  "name": "mongoapi",
+  "version": "1.0.0",
+  "description": "A mongo server",
+  "main": "lib/index.js",
+  "license": "ISC",
+  "private": true,
+  "author": "Mohan Talachutla",
+  "repository": "https://github.com/MohanTalachutla/mongoapi",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "lib/"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "scripts": {
+    "start": "node lib/index.js",
+    "dev": "nodemon main.js",
+    "start:mongo": "mongo-express --url mongodb://localhost:27017/default",
+    "build": "rollup -c --environment NODE_ENV:production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "dotenv-expand": "^5.1.0",
+    "express": "^4.17.1",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.2",
+    "formidable": "^1.2.6",
+    "http-errors": "^1.8.0",
+    "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongodb": "^4.0.1",
+    "mongoose": "^5.13.14"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "debug": "^4.3.2",
+    "eslint": "^9.16.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "mongo-express": "^1.0.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.9",
+    "prettier": "^3.4.2",
+    "rollup": "^4.28.1",
+    "sharp": "^0.33.5",
+    "supports-color": "^9.0.2",
+    "typescript": "^4.7.4",
+    "yarn": "^1.22.19"
+  }
+}
