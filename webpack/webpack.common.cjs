@@ -17,6 +17,9 @@ module.exports = {
     publicPath: appUrl,
   },
 
+  target: 'node', // target web or node
+
+
   resolve: {
     modules: [path.resolve(__dirname, '../src'), 'node_modules'],
     alias: {
@@ -39,7 +42,7 @@ module.exports = {
       },
     ],
   },
-  target: 'node', // target web or node
+
   plugins: [
     new Dotenv(),
     // new NodePolyfillPlugin(), // to inject polyfills

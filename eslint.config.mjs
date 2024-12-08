@@ -25,6 +25,9 @@ export default [
     },
     rules: {},
   },
-  pluginJs.configs.recommended,
-  // pluginJs.configs.all
+  {
+    files: ['**/*.{js, json}'],
+    ...pluginJs.configs.recommended,
+    // pluginJs.configs.all,
+  },
 ];
