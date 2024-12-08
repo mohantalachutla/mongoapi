@@ -28,8 +28,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "lint:format": "prettier ./**/*.{js,ts,mjs,cjs,json} --write .",
-    "lint:staged": "lint-staged"
+    "lint:format": "prettier ./**/*.{js,mjs,cjs,json} --write .",
+    "lint:staged": "lint-staged",
+    "lint:all": "npm run lint:fix && npm run lint:format"
   },
   "dependencies": {
     "@types/express": "^4.17.13",

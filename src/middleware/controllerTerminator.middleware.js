@@ -80,11 +80,10 @@ export const controllerTerminator = (out, req, res) => {
 const logResponse = (out) => {
   if (out instanceof Error) {
     console.error(out.stack);
-  }
-  else if (out instanceof ApiResponse) console.debug(out.toString())
+  } else if (out instanceof ApiResponse) console.debug(out.toString());
   else if (out instanceof Array) {
     out.forEach((item) =>
-      console.debug(_.omitBy(item, (v, k) => _.isEqual(k, "proofOfWork")))
-    )
-  } else console.debug(out)
+      console.debug(_.omitBy(item, (v, k) => _.isEqual(k, 'proofOfWork')))
+    );
+  } else console.debug(out);
 };

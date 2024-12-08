@@ -65,8 +65,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 app.use('/test', testRouter);
 app.use('/auth', authRouter);
 app.use('/activity', activityRouter);
