@@ -1,14 +1,12 @@
-const express = require("express")
+import express from 'express';
 
-const { E } = require("../constants/error.constants")
-const { ApiResponse } = require("../model/common/ApiResponse")
+import { ApiResponse } from '../model/common/ApiResponse';
+const activityRouter = express.Router();
 
-const activityRouter = express.Router()
+activityRouter.get('', async (req, res, next) => {
+  const apiResponse = new ApiResponse('activity get');
 
-activityRouter.get("", async (req, res, next) => {
-  let apiResponse = new ApiResponse("activity get")
+  next(apiResponse);
+});
 
-  next(apiResponse)
-})
-
-exports.activityRouter = activityRouter
+export { activityRouter };

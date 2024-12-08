@@ -1,4 +1,4 @@
-const { model } = require("mongoose")
-const { accountSchema } = require("./account.schema")
+import { model } from 'mongoose';
+import { accountSchema } from './account.schema';
 
-exports.Account = model("account", accountSchema)
+export const Account = model('account', accountSchema);

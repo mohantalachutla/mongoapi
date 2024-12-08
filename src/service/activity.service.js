@@ -1,6 +1,5 @@
-const { BaseError } = require("../error/base.error")
-const { RequiredError } = require("../error/common.error")
-const { Activity } = require("../model/activity.model")
+import { RequiredError } from '../error/common.error';
+import { Activity } from '../model/activity.model';
 
 /**
  *
@@ -12,38 +11,40 @@ const { Activity } = require("../model/activity.model")
  * @returns account
  * @throws throwable Error to be thrown
  */
-const createActivity = async (
+export const createActivity = async (
   { accountId, activityName, modelName, modelDocumentId, description },
   throwable
 ) => {
-  // validate with joi
+  // Validate with joi
   if (
     !(accountId && activityName && modelName && modelDocumentId && description)
-  )
-    if (throwable && throwable instanceof Error)
+  ) {
+    if (throwable && throwable instanceof Error) {
       throw (
         throwable ??
         new RequiredError([
-          "accountId",
-          "activityName",
-          "modelName",
-          "modelDocumentId",
-          "description",
+          'accountId',
+          'activityName',
+          'modelName',
+          'modelDocumentId',
+          'description',
         ])
-      )
+      );
+    }
+  }
   let activity = new Activity({
     _account: accountId,
     activity: activityName,
     modelForRef: modelName,
     _ref: modelDocumentId,
     description,
-  })
+  });
   console.info(
     `activity -- ${modelName} ${activityName} : ${accountId} : ${description} `
-  )
-  activity = await activity.save()
-  if (!activity._id && thowable) throw throwable
-  return activity
-}
-
-exports.createActivity = createActivity
+  );
+  activity = await activity.save();
+  if (!activity._id && throwable) {
+    throw throwable;
+  }
+  return activity;
+};

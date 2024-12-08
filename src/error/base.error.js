@@ -8,17 +8,17 @@
  */
 class BaseError extends Error {
   constructor(name, errorCode, errorMessage) {
-    super(name)
-    this.errorCode = errorCode ?? 400
-    this.errorMessage = errorMessage ?? ""
+    super(name);
+    this.errorCode = errorCode ?? 400;
+    this.errorMessage = errorMessage ?? '';
   }
   setErrorCode(errorCode) {
-    this.errorCode = errorCode ?? 400
-    return this
+    this.errorCode = errorCode ?? 400;
+    return this;
   }
   setErrorMessage(errorMessage) {
-    this.errorMessage = errorMessage ?? ""
-    return this
+    this.errorMessage = errorMessage ?? '';
+    return this;
   }
 }
 
@@ -29,7 +29,7 @@ class BaseError extends Error {
  */
 class UserAwarenessError extends BaseError {
   constructor(name, errorCode, errorMessage) {
-    super(name, errorCode, errorMessage)
+    super(name, errorCode, errorMessage);
   }
 }
 
@@ -39,7 +39,7 @@ class UserAwarenessError extends BaseError {
  */
 class SystemError extends BaseError {
   constructor(name, errorCode, errorMessage) {
-    super(name, errorCode, errorMessage)
+    super(name, errorCode, errorMessage);
   }
 }
 
@@ -50,11 +50,8 @@ class SystemError extends BaseError {
  */
 class NotAnError extends Error {
   constructor(name) {
-    super(name)
+    super(name);
   }
 }
 
-exports.BaseError = BaseError
-exports.UserAwarenessError = UserAwarenessError
-exports.SystemError = SystemError
-exports.NotAnError = NotAnError
+export { BaseError, UserAwarenessError, SystemError, NotAnError };

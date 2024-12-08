@@ -1,15 +1,15 @@
-const { Schema } = require("mongoose");
-const { ObjectId } = require("mongodb");
+import { Schema } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 /**
  * _id === activityId
  * _account === accountId
  */
-let activitySchema = new Schema({
+export const activitySchema = new Schema({
   _account: {
     type: ObjectId,
     required: true,
-    ref: "Account",
+    ref: 'Account',
   },
   activity: {
     type: String,
@@ -22,21 +22,19 @@ let activitySchema = new Schema({
   modelForRef: {
     type: String,
     required: true,
-    enum: ["Job", "JobTodo", "Account", "Transaction", "Payment"],
+    enum: ['Job', 'JobTodo', 'Account', 'Transaction', 'Payment'],
   },
   _ref: {
     type: ObjectId,
     required: true,
-    refPath: "modelForRef",
+    refPath: 'modelForRef',
   },
   createdAt: {
     type: Date,
-    default: global.Date.now(),
+    default: globalThis.Date.now(),
   },
   updatedAt: {
     type: Date,
-    default: global.Date.now(),
+    default: globalThis.Date.now(),
   },
 });
-
-exports.activitySchema = activitySchema;

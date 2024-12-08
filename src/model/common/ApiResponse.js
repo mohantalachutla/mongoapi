@@ -1,5 +1,5 @@
-const { E } = require("../../constants/error.constants")
-const { BaseError } = require("../../error/base.error")
+import { E } from '../../constants/error.constants';
+import { BaseError } from '../../error/base.error';
 
 /**
  * @requires @param {*} payload
@@ -12,39 +12,40 @@ const { BaseError } = require("../../error/base.error")
  */
 class ApiResponse {
   constructor(payload, responseCode, responseMessage, responseCreatedAt) {
-    if (!payload)
-      throw new BaseError("ApiResponseError", 500, E.INTERNAL_SERVER)
-    this.payload = payload
-    this.responseCode = responseCode ?? 200
-    this.responseMessage = responseMessage ?? ""
+    if (!payload) {
+      throw new BaseError('ApiResponseError', 500, E.INTERNAL_SERVER);
+    }
+    this.payload = payload;
+    this.responseCode = responseCode ?? 200;
+    this.responseMessage = responseMessage ?? '';
     this.responseCreatedAt = responseCreatedAt
       ? new Date(responseCreatedAt)
-      : new Date()
+      : new Date();
   }
   setPayload(payload) {
-    this.payload = payload
-    return this
+    this.payload = payload;
+    return this;
   }
   setResponseCode(responseCode) {
-    this.responseCode = responseCode
-    return this
+    this.responseCode = responseCode;
+    return this;
   }
   setResponseMessage(responseMessage) {
-    this.responseMessage = responseMessage
-    return this
+    this.responseMessage = responseMessage;
+    return this;
   }
   setResponseCreatedAt(responseCreatedAt) {
-    this.responseCreatedAt = responseCreatedAt
-    return this
+    this.responseCreatedAt = responseCreatedAt;
+    return this;
   }
   toString() {
-    return {
+    return JSON.stringify({
       payload: this.payload,
       responseCode: this.responseCode,
       responseMessage: this.responseMessage,
       responseCreatedAt: this.responseCreatedAt,
-    }
+    });
   }
 }
 
-exports.ApiResponse = ApiResponse
+export { ApiResponse };

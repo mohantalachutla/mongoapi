@@ -1,7 +1,7 @@
-const _ = require("lodash")
-const { BaseError } = require("../error/base.error")
-const { ApiResponse } = require("../model/common/ApiResponse")
-const { RequiredError } = require("../error/common.error")
+import _ from 'lodash';
+import { BaseError } from '../error/base.error';
+import { ApiResponse } from '../model/common/ApiResponse';
+import { RequiredError } from '../error/common.error';
 
 /**
  *
@@ -12,47 +12,47 @@ const { RequiredError } = require("../error/common.error")
  * @returns ApiResponse { payload, responseCode, responseMessage, responseCreatedAt}
  */
 
-const controllerTerminator = (out, req, res, next) => {
-  //logging result
-  console.debug("controllerTerminator: out: \n")
-  logResponse(out)
+export const controllerTerminator = (out, req, res) => {
+  //Logging result
+  console.debug('<<<<<<<<<<controllerTerminator>>>>>>>>>>: out: \n');
+  logResponse(out);
 
   //Success
   if (out instanceof ApiResponse) {
-    res.status(200).send(out)
+    res.status(200).send(out);
   }
-  // required error
+  // Required error
   else if (out instanceof RequiredError) {
-    // check
+    // Check
     res.status(out.errorCode).send(
       new ApiResponse(
-        {}, // empty incase of error
+        {}, // Empty incase of error
         out.errorCode,
         out.errorMessage
       )
-    )
+    );
   }
-  // expected error
+  // Expected error
   else if (out instanceof BaseError) {
-    // check
+    // Check
     res.status(out.errorCode).send(
       new ApiResponse(
-        {}, // empty incase of error
+        {}, // Empty incase of error
         out.errorCode,
         out.errorMessage
       )
-    )
+    );
   }
 
-  // unexpected error
+  // Unexpected error
   else if (out instanceof Error) {
     res
       .status(out.errorCode ?? 500)
-      .send(new ApiResponse({}, 500, "Opps! Something went wrong CTMBITTT"))
+      .send(new ApiResponse({}, 500, 'Opps! Something went wrong'));
   }
   // {}, Object, [], Array, Map, Set
   else if (
-    _.isObject(out) || //not inherited
+    _.isObject(out) || //Not inherited
     _.isArray(out) ||
     _.isString(out) ||
     _.isMap(out) ||
@@ -62,29 +62,29 @@ const controllerTerminator = (out, req, res, next) => {
       new ApiResponse(
         out,
         200,
-        "" // empty response message
+        '' // Empty response message
       )
-    )
+    );
   }
   // Ending req with 400
   else {
-    console.debug("Ending req with 400")
-    res.status(400).send({})
+    console.debug('Ending req with 400');
+    res.status(400).send({});
   }
-}
+};
 
 /**
  * @description To log response to console or file
  * print size of any array and first row for simplicity
  */
 const logResponse = (out) => {
-  if (out instanceof Error) console.error(out.stack)
-  // else if (out instanceof ApiResponse) console.debug(out.toString())
-  // else if (out instanceof Array) {
-  //   out.forEach((item) =>
-  //     console.debug(_.omitBy(item, (v, k) => _.isEqual(k, "proofOfWork")))
-  //   )
-  // } else console.debug(out)
-}
-
-exports.controllerTerminator = controllerTerminator
+  if (out instanceof Error) {
+    console.error(out.stack);
+  }
+  else if (out instanceof ApiResponse) console.debug(out.toString())
+  else if (out instanceof Array) {
+    out.forEach((item) =>
+      console.debug(_.omitBy(item, (v, k) => _.isEqual(k, "proofOfWork")))
+    )
+  } else console.debug(out)
+};

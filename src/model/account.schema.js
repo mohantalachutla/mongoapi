@@ -1,12 +1,12 @@
-const { Schema } = require("mongoose");
-const { ObjectId, Buffer } = Schema.Types;
+import { Schema } from 'mongoose';
+const { Buffer } = Schema.Types;
 
-const { Activity } = require("./activity.model");
+import { Activity } from './activity.model.js';
 
 /**
  * _id === account._id
  */
-let accountSchema = Schema({
+const _accountSchema = Schema({
   email: {
     type: String,
     required: true,
@@ -24,7 +24,7 @@ let accountSchema = Schema({
   },
   status: {
     type: String,
-    default: "active",
+    default: 'active',
   },
   firstName: {
     type: String,
@@ -51,14 +51,14 @@ let accountSchema = Schema({
   },
 });
 
-// creating virtual field to populate activites
-accountSchema.virtual("activities", {
-  ref: Activity, //model name as string or class
-  localField: "_id",
-  foreignField: "_account",
+// Creating virtual field to populate activites
+_accountSchema.virtual('activities', {
+  ref: Activity, //Model name as string or class
+  localField: '_id',
+  foreignField: '_account',
 });
 
-accountSchema.set("toObject", { virtuals: true });
-accountSchema.set("toJSON", { virtuals: true });
+_accountSchema.set('toObject', { virtuals: true });
+_accountSchema.set('toJSON', { virtuals: true });
 
-exports.accountSchema = accountSchema;
+export const accountSchema = _accountSchema;

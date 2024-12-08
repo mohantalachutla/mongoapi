@@ -1,19 +1,16 @@
-const { ObjectId } = require("mongodb");
-const {
+import {
   AnonymousError,
-  UnauthorizedAccountError,
   InvalidAccountTokenError,
-  AccountNotFoundError,
-} = require("../error/account.error");
-const { Account } = require("../model/account.model");
-const { findAccount, findAccountById } = require("../service/account.service");
-const { verifyAuthToken } = require("../util/auth.util");
+  UnauthorizedAccountError,
+} from '../error/account.error';
+import { findAccountById } from '../service/account.service';
+import { verifyAuthToken } from '../util/auth.util';
 
-// breaks the circuit if account not found
-const canActivate = async (req, res, next) => {
+// Breaks the circuit if account not found
+export const canActivate = async (req, res, next) => {
   const { headers } = req;
   try {
-    const token = headers?.authorization?.split(" ")[1];
+    const token = headers?.authorization?.split(' ')[1];
     if (!token) {
       throw new UnauthorizedAccountError();
     }
@@ -22,7 +19,7 @@ const canActivate = async (req, res, next) => {
       throw new UnauthorizedAccountError();
     }
     if (accountId) {
-      let account = await findAccountById(accountId);
+      const account = await findAccountById(accountId);
       if (!account || account == {}) {
         throw new UnauthorizedAccountError();
       }
@@ -37,27 +34,29 @@ const canActivate = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-  return;
 };
 
-// won't break the circuit even if account not found
-const extractLoginInfo = async (req, res, next) => {
+// Won't break the circuit even if account not found
+export const extractLoginInfo = async (req, res, next) => {
   const { headers } = req;
   try {
-    const token = headers?.authorization?.split(" ")[1];
-    if (!token) throw new AnonymousError();
+    const token = headers?.authorization?.split(' ')[1];
+    if (!token) {
+      throw new AnonymousError();
+    }
     const accountId = verifyAuthToken(token);
-    if (!accountId) throw new InvalidAccountTokenError();
-    let account = await findAccountById(accountId);
+    if (!accountId) {
+      throw new InvalidAccountTokenError();
+    }
+    const account = await findAccountById(accountId);
     req.CURRENTUSERID = account._id;
     req.CURRENTUSERCRYPTOADDRESS = account.cryptoAddress;
     next();
   } catch (err) {
-    if (err instanceof AnonymousError) next();
-    else next(err);
+    if (err instanceof AnonymousError) {
+      next();
+    } else {
+      next(err);
+    }
   }
-  return;
 };
-
-exports.canActivate = canActivate;
-exports.extractLoginInfo = extractLoginInfo;

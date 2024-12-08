@@ -1,38 +1,27 @@
-const express = require("express");
-const crypto = require("crypto");
-const _ = require("lodash");
+import express from 'express';
+import _ from 'lodash';
 
-const { Account } = require("../model/account.model");
-const { E } = require("../constants/error.constants");
-const { Activity } = require("../model/activity.model");
-const { ObjectId } = require("mongodb");
-const { getCryptoAddress, signAuthToken } = require("../util/auth.util");
-const {
-  canActivate,
-  extractLoginInfo,
-} = require("../middleware/auth.middleware");
-const {
-  findAccountDetails,
-  findAccount,
+import { Account } from '../model/account.model';
+
+import { signAuthToken } from '../util/auth.util';
+import { extractLoginInfo } from '../middleware/auth.middleware';
+import {
   createAccount,
-  findAccountById,
+  findAccount,
+  findAccountDetails,
   findAccountDetailsById,
-} = require("../service/account.service");
-const { createActivity } = require("../service/activity.service");
-const { constants } = require("../constants/common.constants");
-const {
-  controllerTerminator,
-} = require("../middleware/controllerTerminator.middleware");
-const { BaseError } = require("../error/base.error");
-const {
+} from '../service/account.service';
+import { createActivity } from '../service/activity.service';
+import { constants } from '../constants/common.constants';
+import { controllerTerminator } from '../middleware/controllerTerminator.middleware';
+import {
   AccountCreationError,
-  AccountNotFoundError,
   AccountDetailsNotFoundError,
   InvalidAccountTokenError,
-} = require("../error/account.error");
-const { ApiResponse } = require("../model/common/ApiResponse");
-const { registerValidator } = require("../validator/register.validator");
-const { loginValidator } = require("../validator/login.validator");
+} from '../error/account.error';
+import { ApiResponse } from '../model/common/ApiResponse';
+import { registerValidator } from '../validator/register.validator';
+import { loginValidator } from '../validator/login.validator';
 
 const authRouter = express.Router();
 
@@ -46,57 +35,63 @@ const authRouter = express.Router();
  * token should be signed
  */
 authRouter.post(
-  "/register",
+  '/register',
   async (req, res, next) => {
     const { fields } = req;
 
     try {
-      let input = await registerValidator.validateAsync({
+      const input = await registerValidator.validateAsync({
         email: fields.email,
         password: fields.password,
       });
 
-      // make sure the email is unique
+      // Make sure the email is unique
       try {
         await findAccount({ email: input.email });
-        next(new ApiResponse({}, 400, "Sorry email is allready used"));
-      } catch (e) {}
+        next(new ApiResponse({}, 400, 'Sorry email is allready used'));
+      } catch (e) {
+        console.error(e);
+      }
 
       let account = new Account({
         ...input,
-        cryptoAddress: input.email, //encryptedmail
+        cryptoAddress: input.email, //Encryptedmail
       });
 
       account = await createAccount(account);
-      if (!account?._id) throw new AccountCreationError();
+      if (!account?._id) {
+        throw new AccountCreationError();
+      }
 
-      // activity
-      let activity = await createActivity({
+      // Activity
+      const activity = await createActivity({
         accountId: account._id.toString(),
         activityName: constants.ACTIVITY_ACCOUNT_CREATED,
-        modelName: "Account",
+        modelName: 'Account',
         modelDocumentId: account._id,
         description: `Your account created ${account._id} at ${account.createdAt}`,
       });
-      if (!activity?._id) throw new AccountCreationError();
+      if (!activity?._id) {
+        throw new AccountCreationError();
+      }
       account = await findAccountDetailsById(account._id);
-      // for instant login
+      // For instant login
       next(
         new ApiResponse(
           {
             ...account,
-            token: signAuthToken(account._id), //getAuthToken(account._id) // encrypted uid
+            token: signAuthToken(account._id), //GetAuthToken(account._id) // encrypted uid
           },
           200,
-          "Registration Successful"
+          'Registration Successful'
         )
       );
     } catch (err) {
-      if (err instanceof AccountCreationError)
-        next(new ApiResponse({}, 400, "Registration failed"));
+      if (err instanceof AccountCreationError) {
+        next(new ApiResponse({}, 400, 'Registration failed'));
+      }
       next(err);
     }
-    return;
   },
   controllerTerminator
 );
@@ -111,14 +106,14 @@ authRouter.post(
  */
 
 authRouter.post(
-  "/login",
+  '/login',
   async (req, res, next) => {
     const { fields } = req;
     let account = {};
 
     try {
-      // the three next line are for email validation (remove them if you wanna login with SYSTEM)
-      let input = await loginValidator.validateAsync({
+      // The three next line are for email validation (remove them if you wanna login with SYSTEM)
+      const input = await loginValidator.validateAsync({
         email: fields.email,
         password: fields.password,
       });
@@ -126,23 +121,25 @@ authRouter.post(
         (await findAccount(
           { email: fields.email },
           { email: true, password: true } //"email + password"
-        )) ?? // force included password, exclueded at schema level
+        )) ?? // Force included password, exclueded at schema level
         {};
-      if (!account?._id)
-        next(new ApiResponse({}, 400, "Incorret UserName or Password"));
-      // the next line is for email validation (remove it if you wanna login with SYSTEM)
-      if (account.password !== input.password)
-        next(new ApiResponse({}, 400, "Incorret UserName or Password"));
+      if (!account?._id) {
+        next(new ApiResponse({}, 400, 'Incorret UserName or Password'));
+      }
+      // The next line is for email validation (remove it if you wanna login with SYSTEM)
+      if (account.password !== input.password) {
+        next(new ApiResponse({}, 400, 'Incorret UserName or Password'));
+      }
 
       account = await findAccountDetailsById(account._id);
       next(
         new ApiResponse(
           {
             ...account,
-            token: signAuthToken(account._id), //getAuthToken(account._id) // encrypted uid
+            token: signAuthToken(account._id), //GetAuthToken(account._id) // encrypted uid
           },
           200,
-          "Login Successful"
+          'Login Successful'
         )
       );
     } catch (err) {
@@ -152,18 +149,22 @@ authRouter.post(
   controllerTerminator
 );
 authRouter.post(
-  "/account",
+  '/account',
   extractLoginInfo,
   async (req, res, next) => {
     const { CURRENTUSERID } = req;
     try {
-      if (!CURRENTUSERID) throw new InvalidAccountTokenError();
+      if (!CURRENTUSERID) {
+        throw new InvalidAccountTokenError();
+      }
       let account = await findAccountDetailsById(CURRENTUSERID);
-      if (!account._id) throw new AccountDetailsNotFoundError();
-      account = _.chain(account).omit("password").value();
+      if (!account._id) {
+        throw new AccountDetailsNotFoundError();
+      }
+      account = _.chain(account).omit('password').value();
       next({
         ...account,
-        token: signAuthToken(account._id), //getAuthToken(account._id) // encrypted uid
+        token: signAuthToken(account._id), //GetAuthToken(account._id) // encrypted uid
       });
     } catch (err) {
       if (err instanceof InvalidAccountTokenError) {
@@ -172,13 +173,12 @@ authRouter.post(
       }
       next(err);
     }
-    return;
   },
   controllerTerminator
 );
 
 authRouter.get(
-  "/account/wallet",
+  '/account/wallet',
   extractLoginInfo,
   async (req, res, next) => {
     const { CURRENTUSERID, CURRENTUSERCRYPTOADDRESS } = req;
@@ -188,15 +188,15 @@ authRouter.get(
         cryptoAddress: CURRENTUSERCRYPTOADDRESS,
         _id: CURRENTUSERID,
       });
-      if (!account?.cryptoAddress) throw new AccountDetailsNotFoundError();
-      account = _.chain(account).pick(["wallet", "cryptoAddress"]);
+      if (!account?.cryptoAddress) {
+        throw new AccountDetailsNotFoundError();
+      }
+      account = _.chain(account).pick(['wallet', 'cryptoAddress']).value();
       next(account);
     } catch (err) {
       next(err);
     }
-    return;
   },
   controllerTerminator
 );
-
-exports.authRouter = authRouter;
+export { authRouter };

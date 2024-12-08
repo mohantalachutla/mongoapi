@@ -1,9 +1,8 @@
 const common = {
-  INTERNAL_SERVER: "Opps! Something went wrong",
-};
+    INTERNAL_SERVER: 'Opps! Something went wrong',
+  },
+  account = {
+    ACCOUNT_CREATION: 'Unable to register you!',
+  };
 
-const account = {
-  ACCOUNT_CREATION: "Unable to register you!",
-};
-
-exports.E = { ...common, ...account };
+export const E = { ...common, ...account };

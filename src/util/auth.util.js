@@ -1,19 +1,9 @@
-const crypto = require("crypto")
+import crypto from 'crypto';
 
-const SECRETE_KEY = ""
+export const getCryptoAddress = () => crypto.randomUUID();
 
-const getCryptoAddress = () => {
-  return crypto.randomUUID()
-}
-
-const signAuthToken = (accountId) => {
-  return accountId
-}
-const verifyAuthToken = (token) => {
-  console.debug({ token })
-  return token
-}
-
-exports.getCryptoAddress = getCryptoAddress
-exports.signAuthToken = signAuthToken
-exports.verifyAuthToken = verifyAuthToken
+export const signAuthToken = (accountId) => accountId;
+export const verifyAuthToken = (token) => {
+  console.debug({ token });
+  return token;
+};

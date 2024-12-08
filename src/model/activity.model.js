@@ -1,4 +1,4 @@
-const { model } = require("mongoose")
-const { activitySchema } = require("./activity.schema")
+import { model } from 'mongoose';
+import { activitySchema } from './activity.schema';
 
-exports.Activity = model("activity", activitySchema)
+export const Activity = model('activity', activitySchema);

@@ -1,16 +1,16 @@
-const { RequiredError } = require("../error/common.error");
-const { AccountNotFoundError } = require("../error/account.error");
-const { Account } = require("../model/account.model");
-const _ = require("lodash");
+import { RequiredError } from '../error/common.error';
+import { AccountNotFoundError } from '../error/account.error';
+import { Account } from '../model/account.model';
+import _ from 'lodash';
 
-// keep password separate
+// Keep password separate
 /**
  *
  * @param {cryptoAddress: Crypto Address}
  * @param {_id: Account ID}
  * @returns accountDocument
  */
-let findAccountDetails = async ({
+export const findAccountDetails = async ({
   cryptoAddress,
   firstName,
   lastName,
@@ -21,17 +21,17 @@ let findAccountDetails = async ({
   updatedAt,
 }) => {
   let account = await findAccount({
-    cryptoAddress,
-    firstName,
-    lastName,
-    displayName,
-    displayPicture,
-    ssn,
-    createdAt,
-    updatedAt,
-  });
-  // fetching balance
-  let wallet = await getBalance(account);
+      cryptoAddress,
+      firstName,
+      lastName,
+      displayName,
+      displayPicture,
+      ssn,
+      createdAt,
+      updatedAt,
+    }),
+    // Fetching balance
+    wallet = await getBalance(account);
   account = { wallet, ...account };
   return account;
 };
@@ -41,10 +41,10 @@ let findAccountDetails = async ({
  * @param {_id: Account ID}
  * @returns accountDocument
  */
-let findAccountDetailsById = async (_id, projection) => {
-  let account = await findAccountById(_id, projection);
-  // fetching balance
-  let wallet = await getBalance(account);
+export const findAccountDetailsById = async (_id, projection) => {
+  let account = await findAccountById(_id, projection),
+    // Fetching balance
+    wallet = await getBalance(account);
   account = { wallet, ...account };
   return account;
 };
@@ -55,11 +55,11 @@ let findAccountDetailsById = async (_id, projection) => {
  * @param {_id: Account ID}
  * @returns accountDocument
  */
-let findAccount = async (
+export const findAccount = async (
   {
     email,
     cryptoAddress,
-    status = "active",
+    status = 'active',
     firstName,
     lastName,
     displayName,
@@ -70,9 +70,9 @@ let findAccount = async (
   },
   projection = {}
 ) => {
-  let account = {};
-  let where = {};
-  // mongoose.set("debug", true)
+  let account = {},
+    where = {};
+  // Mongoose.set("debug", true)
   where = _.chain({
     email,
     cryptoAddress,
@@ -87,9 +87,12 @@ let findAccount = async (
   })
     .omitBy(_.isUndefined)
     .value();
-  if (!_.isEmpty(where))
+  if (!_.isEmpty(where)) {
     account = await Account.findOne(where, projection).lean().exec();
-  if (_.isEmpty(account)) throw new AccountNotFoundError();
+  }
+  if (_.isEmpty(account)) {
+    throw new AccountNotFoundError();
+  }
   return account;
 };
 
@@ -107,11 +110,11 @@ let findAccount = async (
  * @returns All the account related details
  * @description populates activities
  */
-let findAccountAndPopulate = async (
+export const findAccountAndPopulate = async (
   {
     email,
     cryptoAddress,
-    status = "active",
+    status = 'active',
     firstName,
     lastName,
     displayName,
@@ -122,9 +125,9 @@ let findAccountAndPopulate = async (
   },
   projection = {}
 ) => {
-  let account = {};
-  let where = {};
-  // mongoose.set("debug", true)
+  let account = {},
+    where = {};
+  // Mongoose.set("debug", true)
   where = _.chain({
     email,
     cryptoAddress,
@@ -139,12 +142,15 @@ let findAccountAndPopulate = async (
   })
     .omitBy(_.isUndefined)
     .value();
-  if (where !== {})
+  if (!_.isEmpty(where)) {
     account = await Account.findOne(where, projection)
-      .populate("activities")
+      .populate('activities')
       .lean()
       .exec();
-  if (!(account && account !== {})) throw new AccountNotFoundError();
+  }
+  if (_.isEmpty(account)) {
+    throw new AccountNotFoundError();
+  }
   return account;
 };
 
@@ -152,8 +158,8 @@ let findAccountAndPopulate = async (
  * @description fetches system account
  * @returns SYSTEM
  */
-const getSystemAccount = async () => {
-  const cryptoAddress = "SYSTEM";
+export const getSystemAccount = async () => {
+  const cryptoAddress = 'SYSTEM';
   return await findAccount({ cryptoAddress });
 };
 
@@ -164,13 +170,15 @@ const getSystemAccount = async () => {
  * @description calcutates balance by adding and subtracting debits and credits
  */
 
-let getBalance = async (account) => {
-  if (!account && !_.isEmpty(account)) throw new RequiredError(["account"]);
+export const getBalance = async (account) => {
+  if (!account && !_.isEmpty(account)) {
+    throw new RequiredError(['account']);
+  }
   let balance = 0;
   try {
-    // balance =
+    // Balance =
     //   (
-    //     await TransactionDetail.findOne({
+    //     Await TransactionDetail.findOne({
     //       $or: [
     //         { _debitAccount: account._id, indicator: "dr" },
     //         { _creditAccount: account._id, indicator: "cr" },
@@ -180,7 +188,7 @@ let getBalance = async (account) => {
     //       .select({ _id: 0, balance: 1 })
     //   )?.balance ?? 0;
     balance = 0;
-  } catch (err) {
+  } catch {
     balance = 0;
   }
   return balance;
@@ -192,7 +200,7 @@ let getBalance = async (account) => {
  * @returns account
  * @description creates an new account
  */
-const createAccount = async ({
+export const createAccount = async ({
   email,
   password,
   cryptoAddress,
@@ -229,17 +237,10 @@ const createAccount = async ({
  * @param projection
  * @returns  account
  */
-const findAccountById = async (_id, projection = {}) => {
+export const findAccountById = async (_id, projection = {}) => {
   let account = {};
-  if (_id) account = await Account.findById(_id, projection).lean().exec();
+  if (_id) {
+    account = await Account.findById(_id, projection).lean().exec();
+  }
   return account;
 };
-
-exports.getSystemAccount = getSystemAccount;
-exports.getBalance = getBalance;
-exports.createAccount = createAccount;
-exports.findAccount = findAccount;
-exports.findAccountById = findAccountById;
-exports.findAccountDetails = findAccountDetails;
-exports.findAccountDetailsById = findAccountDetailsById;
-exports.findAccountAndPopulate = findAccountAndPopulate;

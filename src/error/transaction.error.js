@@ -1,15 +1,15 @@
-const { BaseError } = require("./base.error")
+import { BaseError } from './base.error';
 
 class NotEnoughBalanceError extends BaseError {
   constructor() {
-    super("NotEnoughBalanceError")
+    super('NotEnoughBalanceError');
   }
 }
 class TransactionFailedError extends BaseError {
   constructor() {
-    super("TransactionFailedError")
+    super('TransactionFailedError');
   }
 }
 
-exports.NotEnoughBalanceError = NotEnoughBalanceError
-exports.TransactionFailedError = TransactionFailedError
+export { NotEnoughBalanceError };
+export { TransactionFailedError };
