@@ -1,4 +1,5 @@
-const fs = require('fs')
+import fs from 'fs';
+import process from 'process';
 
 /**
  * Recursively get all files in a directory that match the given extensions
@@ -9,35 +10,37 @@ const fs = require('fs')
  * @param {string[]} [excludeExtensions=[]] - The file extensions to exclude.
  * @returns {string[]} - An array of paths to the files found.
  */
-const getFiles = (entry, extensions = [], excludeExtensions = []) => {
-  let fileNames = []
-  const dirs = fs.readdirSync(entry)
+export const getFiles = (entry, extensions = [], excludeExtensions = []) => {
+  let fileNames = [];
+  const dirs = fs.readdirSync(entry);
 
   dirs.forEach((dir) => {
-    const path = `${entry}/${dir}`
+    const path = `${entry}/${dir}`;
 
     if (fs.lstatSync(path).isDirectory()) {
       fileNames = [
         ...fileNames,
         ...getFiles(path, extensions, excludeExtensions),
-      ]
+      ];
 
-      return
+      return;
     }
 
     if (
       !excludeExtensions.some((exclude) => dir.endsWith(exclude)) &&
       extensions.some((ext) => dir.endsWith(ext))
     ) {
-      fileNames.push(path)
+      fileNames.push(path);
     }
-  })
+  });
 
-  return fileNames
-}
+  return fileNames;
+};
 
-const isProd = function(){
-  process.env.NODE_ENV === 'production'
-}
+export const isProd = function () {
+  return process.env.NODE_ENV === 'production';
+};
 
-module.exports = { isProd, getFiles}
+export const isDev = function () {
+  return process.env.NODE_ENV === 'development';
+};
