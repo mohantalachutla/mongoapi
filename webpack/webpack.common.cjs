@@ -1,7 +1,5 @@
 const Dotenv = require('dotenv-webpack');
 const path = require('path');
-const NodeExternals = require('webpack-node-externals');
-// const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 
 const packageJson = require(path.resolve(__dirname, '../package.json'));
 
@@ -45,11 +43,5 @@ module.exports = {
 
   plugins: [
     new Dotenv(),
-    // new NodePolyfillPlugin(), // to inject polyfills
-  ],
-  externals: [
-    NodeExternals({
-      modulesDir: path.resolve(__dirname, '../node_modules'),
-    }),
-  ],
+  ]
 };

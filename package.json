@@ -2,15 +2,26 @@
   "name": "mongoapi",
   "version": "1.0.0",
   "description": "A mongo server",
-  "main": "lib/index.js",
   "license": "ISC",
-  "private": true,
   "author": "Mohan Talachutla",
-  "repository": "https://github.com/MohanTalachutla/mongoapi",
+  "homepage": "https://github.com/mohantalachutla/mongoapi",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohantalachutla/mongoapi.git"
+  },
   "engines": {
     "node": ">=16.0.0"
   },
-  "module": "index",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    }
+  },
   "files": [
     "lib/"
   ],
@@ -18,6 +29,10 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "app": {
+    "host": "http://localhost",
+    "port": 3001
   },
   "scripts": {
     "start": "node lib/index.js",
@@ -77,9 +92,5 @@
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0",
     "yarn": "^1.22.19"
-  },
-  "app": {
-    "host": "http://localhost",
-    "port": 3001
   }
 }

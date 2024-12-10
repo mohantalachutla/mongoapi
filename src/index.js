@@ -9,7 +9,7 @@ import cors from 'cors';
 import * as eFormidable from 'express-formidable';
 import eSession from 'express-session';
 import packageJson from '../package.json';
-import { isProd } from '../scripts/index.js';
+import { isProd } from '../scripts/index.cjs';
 
 // Core
 import process from 'process';
