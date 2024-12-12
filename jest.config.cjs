@@ -12,15 +12,17 @@ module.exports = {
     },
   },
 
-  testPathIgnorePatterns: ['/node_modules/', '/lib/'],
-  watchPathIgnorePatterns: ['/node_modules/', '/lib/'],
-
   // collectCoverage: true, don't collect coverage by default
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/index.{js,jsx,ts,tsx}',
   ],
+
+  testPathIgnorePatterns: ['/node_modules/', '/lib/'],
+  watchPathIgnorePatterns: ['/node_modules/', '/lib/'],
+
+  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 
   // testEnvironment: 'jsdom',
 
@@ -29,5 +31,4 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest', // Use babel-jest for JS and TS files
   },
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
 };
