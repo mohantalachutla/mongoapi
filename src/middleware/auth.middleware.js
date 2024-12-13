@@ -24,10 +24,8 @@ export const canActivate = async (req, res, next) => {
         throw new UnauthorizedAccountError();
       }
       if (account && account != {}) {
-        req.CURRENTUSERID = new String(account._id).valueOf();
-        req.CURRENTUSERCRYPTOADDRESS = new String(
-          account.cryptoAddress
-        ).valueOf();
+        req.CURRENT_USERID = new String(account._id).valueOf();
+        req.CURRENT_USERNAME = new String(account.username).valueOf();
         next();
       }
     }
@@ -49,8 +47,8 @@ export const extractLoginInfo = async (req, res, next) => {
       throw new InvalidAccountTokenError();
     }
     const account = await findAccountById(accountId);
-    req.CURRENTUSERID = account._id;
-    req.CURRENTUSERCRYPTOADDRESS = account.cryptoAddress;
+    req.CURRENT_USERID = account._id;
+    req.CURRENT_USERNAME = account.username;
     next();
   } catch (err) {
     if (err instanceof AnonymousError) {

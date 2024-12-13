@@ -6,12 +6,12 @@ import _ from 'lodash';
 // Keep password separate
 /**
  *
- * @param {cryptoAddress: Crypto Address}
+ * @param {username: Username}
  * @param {_id: Account ID}
  * @returns accountDocument
  */
 export const findAccountDetails = async ({
-  cryptoAddress,
+  username,
   firstName,
   lastName,
   displayName,
@@ -21,7 +21,7 @@ export const findAccountDetails = async ({
   updatedAt,
 }) => {
   let account = await findAccount({
-      cryptoAddress,
+      username,
       firstName,
       lastName,
       displayName,
@@ -51,14 +51,14 @@ export const findAccountDetailsById = async (_id, projection) => {
 
 /**
  *
- * @param {cryptoAddress: Crypto Address}
+ * @param {username: Username}
  * @param {_id: Account ID}
  * @returns accountDocument
  */
 export const findAccount = async (
   {
     email,
-    cryptoAddress,
+    username,
     status = 'active',
     firstName,
     lastName,
@@ -75,7 +75,7 @@ export const findAccount = async (
   // Mongoose.set("debug", true)
   where = _.chain({
     email,
-    cryptoAddress,
+    username,
     status,
     firstName,
     lastName,
@@ -99,7 +99,7 @@ export const findAccount = async (
 /**
  *
  * @param email
- * @param cryptoAddress
+ * @param username
  * @param status
  * @param firstName
  * @param lastName
@@ -113,7 +113,7 @@ export const findAccount = async (
 export const findAccountAndPopulate = async (
   {
     email,
-    cryptoAddress,
+    username,
     status = 'active',
     firstName,
     lastName,
@@ -130,7 +130,7 @@ export const findAccountAndPopulate = async (
   // Mongoose.set("debug", true)
   where = _.chain({
     email,
-    cryptoAddress,
+    username,
     status,
     firstName,
     lastName,
@@ -159,8 +159,8 @@ export const findAccountAndPopulate = async (
  * @returns SYSTEM
  */
 export const getSystemAccount = async () => {
-  const cryptoAddress = 'SYSTEM';
-  return await findAccount({ cryptoAddress });
+  const username = 'SYSTEM';
+  return await findAccount({ username });
 };
 
 /**
@@ -195,15 +195,15 @@ export const getBalance = async (account) => {
 };
 
 /**
- * @requires email, password, cryptoaddress
- * @param email, password, cryptoAddress, firstName, lastName, displayName, displayPicture, ssn, createdAt, updatedAt
+ * @requires email, password, username
+ * @param email, password, username, firstName, lastName, displayName, displayPicture, ssn, createdAt, updatedAt
  * @returns account
  * @description creates an new account
  */
 export const createAccount = async ({
   email,
   password,
-  cryptoAddress,
+  username,
   firstName,
   lastName,
   displayName,
@@ -216,7 +216,7 @@ export const createAccount = async ({
     _.chain({
       email,
       password,
-      cryptoAddress,
+      username,
       firstName,
       lastName,
       displayName,

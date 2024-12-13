@@ -25,14 +25,13 @@ import { loginValidator } from '../validator/login.validator';
 
 const authRouter = express.Router();
 
+//Todo: encrypt password
 /**
  * @requires email, password
  * @returns ApiResponse
  * @param email Email
- * @param cryptoAddress encrypted email
+ * @param username Username
  * @description Creates an Account
- * @todo cryptoaddress should be encrypted *
- * token should be signed
  */
 authRouter.post(
   '/register',
@@ -55,7 +54,7 @@ authRouter.post(
 
       let account = new Account({
         ...input,
-        cryptoAddress: input.email, //Encryptedmail
+        username: input.email,
       });
 
       account = await createAccount(account);
@@ -101,8 +100,6 @@ authRouter.post(
  * @requires email, password
  * @returns ApiResponse
  * @description Logsin an User
- * @todo cryptoaddress should be encrypted *
- * token signed
  */
 
 authRouter.post(
@@ -181,17 +178,16 @@ authRouter.get(
   '/account/wallet',
   extractLoginInfo,
   async (req, res, next) => {
-    const { CURRENTUSERID, CURRENTUSERCRYPTOADDRESS } = req;
-    // console.debug({ CURRENTUSERID, CURRENTUSERCRYPTOADDRESS })
+    const { CURRENT_USERID, CURRENT_USERNAME } = req;
     try {
       let account = await findAccountDetails({
-        cryptoAddress: CURRENTUSERCRYPTOADDRESS,
-        _id: CURRENTUSERID,
+        username: CURRENT_USERNAME,
+        _id: CURRENT_USERID,
       });
-      if (!account?.cryptoAddress) {
+      if (!account?.username) {
         throw new AccountDetailsNotFoundError();
       }
-      account = _.chain(account).pick(['wallet', 'cryptoAddress']).value();
+      account = _.chain(account).pick(['wallet', 'username']).value();
       next(account);
     } catch (err) {
       next(err);

@@ -17,7 +17,7 @@ const _accountSchema = Schema({
     required: true,
     select: false,
   },
-  cryptoAddress: {
+  username: {
     type: String,
     required: true,
     unique: true,
