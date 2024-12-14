@@ -34,10 +34,10 @@
     "port": 3001
   },
   "scripts": {
-    "start": "node lib/index.js",
-    "start:dev": "nodemon --watch ./src --exec \"npm run start\"",
+    "start": "cross-env NODE_ENV=production node lib/index.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon --watch ./src --exec \"npm run build:dev && cross-env NODE_ENV=development node lib/index.js\"",
     "build": "webpack --mode production --config ./webpack/webpack.config.cjs ",
-    "build:dev": "webpack --mode development --watch --config ./webpack/webpack.config.cjs ",
+    "build:dev": "webpack --mode development --config ./webpack/webpack.config.cjs ",
     "start:mongo": "mongo-express --url mongodb://localhost:27017/default",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
@@ -77,6 +77,7 @@
     "@types/jest": "^29.5.14",
     "babel-jest": "^29.7.0",
     "babel-loader": "^9.2.1",
+    "cross-env": "^7.0.3",
     "debug": "^4.3.2",
     "dotenv-webpack": "^8.1.0",
     "eslint": "^9.16.0",

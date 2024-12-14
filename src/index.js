@@ -11,13 +11,10 @@ import eSession from 'express-session';
 import packageJson from '../package.json';
 import { isProd } from '../scripts/index.cjs';
 
+// api router
+import apiRouter from './router';
 // Core
 import process from 'process';
-
-//Local
-import { authRouter } from './controller/auth.controller';
-import { activityRouter } from './controller/activity.controller';
-import { testRouter } from './controller/test.controller';
 
 import { db } from './config/mongoose.config';
 import { EnvNotSetError } from './error/common.error';
@@ -28,15 +25,13 @@ import { getImageLocation } from './util/image.util';
 
 const app = express(),
   corsOptions = {
-    origin: ['http://localhost:4200', 'http://localhost:3000'],
+    origin: (process.env.CORS_ORIGIN ?? '').split(',') || '*',
     credentials: true,
     optionsSuccessStatus: 200,
   };
 
 //Middilewares
-if (!isProd()) {
-  app.use(cors(corsOptions));
-}
+app.use(isProd() ? cors(corsOptions) : cors());
 if (!isProd()) {
   import('morgan').then(({ default: morgan }) => {
     app.use(morgan('dev'));
@@ -65,9 +60,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/test', testRouter);
-app.use('/auth', authRouter);
-app.use('/activity', activityRouter);
+app.use('/api', apiRouter);
 
 /**
  * Handles response and errors forwarded from controllers
