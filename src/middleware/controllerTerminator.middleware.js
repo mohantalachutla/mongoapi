@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import { BaseError } from '../error/base.error';
+import { BaseError, SystemError } from '../error/base.error';
 import { ApiResponse } from '../model/common/ApiResponse';
-import { RequiredError } from '../error/common.error';
 
 /**
  *
@@ -12,33 +11,35 @@ import { RequiredError } from '../error/common.error';
  * @returns ApiResponse { payload, responseCode, responseMessage, responseCreatedAt}
  */
 
-export const controllerTerminator = (out, req, res) => {
+// eslint-disable-next-line no-unused-vars
+export const controllerTerminator = (out, req, res, next) => {
   //Logging result
-  console.debug('<<<<<<<<<<controllerTerminator>>>>>>>>>>: out: \n');
+  console.log('<<<<<<<<<<controllerTerminator>>>>>>>>>>: out: \n');
   logResponse(out);
 
   //Success
   if (out instanceof ApiResponse) {
-    res.status(200).send(out);
+    res.status(out.responseCode ?? 200).send(out);
   }
-  // Required error
-  else if (out instanceof RequiredError) {
-    // Check
-    res.status(out.errorCode).send(
+
+  //System error
+  else if (out instanceof SystemError) {
+    res.status(out.errorCode ?? 500).send(
       new ApiResponse(
         {}, // Empty incase of error
-        out.errorCode,
+        out.errorCode ?? 500,
         out.errorMessage
       )
     );
   }
+
   // Expected error
   else if (out instanceof BaseError) {
     // Check
-    res.status(out.errorCode).send(
+    res.status(out.errorCode ?? 400).send(
       new ApiResponse(
         {}, // Empty incase of error
-        out.errorCode,
+        out.errorCode ?? 400,
         out.errorMessage
       )
     );
@@ -48,9 +49,11 @@ export const controllerTerminator = (out, req, res) => {
   else if (out instanceof Error) {
     res
       .status(out.errorCode ?? 500)
-      .send(new ApiResponse({}, 500, 'Opps! Something went wrong'));
+      .send(
+        new ApiResponse({}, out.errorCode ?? 500, 'Opps! Something went wrong')
+      );
   }
-  // {}, Object, [], Array, Map, Set
+  // {}, Object, [], Array, Map, Set but not Error or ApiResponse
   else if (
     _.isObject(out) || //Not inherited
     _.isArray(out) ||
@@ -68,7 +71,6 @@ export const controllerTerminator = (out, req, res) => {
   }
   // Ending req with 400
   else {
-    console.debug('Ending req with 400');
     res.status(400).send({});
   }
 };
@@ -79,11 +81,7 @@ export const controllerTerminator = (out, req, res) => {
  */
 const logResponse = (out) => {
   if (out instanceof Error) {
-    console.error(out.stack);
+    console.error(out);
   } else if (out instanceof ApiResponse) console.debug(out.toString());
-  else if (out instanceof Array) {
-    out.forEach((item) =>
-      console.debug(_.omitBy(item, (v, k) => _.isEqual(k, 'proofOfWork')))
-    );
-  } else console.debug(out);
+  else console.debug(JSON.stringify(out));
 };

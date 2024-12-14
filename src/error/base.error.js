@@ -29,7 +29,7 @@ class BaseError extends Error {
  */
 class UserAwarenessError extends BaseError {
   constructor(name, errorCode, errorMessage) {
-    super(name, errorCode, errorMessage);
+    super(name, errorCode ?? 400, errorMessage);
   }
 }
 
@@ -39,19 +39,8 @@ class UserAwarenessError extends BaseError {
  */
 class SystemError extends BaseError {
   constructor(name, errorCode, errorMessage) {
-    super(name, errorCode, errorMessage);
+    super(name, errorCode ?? 500, errorMessage);
   }
 }
 
-/**
- * Not a error
- * Should not be logged to system log
- * i.e. data not found
- */
-class NotAnError extends Error {
-  constructor(name) {
-    super(name);
-  }
-}
-
-export { BaseError, UserAwarenessError, SystemError, NotAnError };
+export { BaseError, UserAwarenessError, SystemError };

@@ -7,6 +7,11 @@ export const registerValidator = joi.object({
     .required()
     .email({ minDomainSegments: 2 })
     .error(new ValidationError('Invalid email')),
+  username: joi
+    .string()
+    .max(20)
+    .required()
+    .error(new ValidationError('Invalid username')),
   password: joi
     .string()
     .required()

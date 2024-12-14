@@ -55,35 +55,13 @@ export const findAccountDetailsById = async (_id, projection) => {
  * @param {_id: Account ID}
  * @returns accountDocument
  */
-export const findAccount = async (
-  {
-    email,
-    username,
-    status = 'active',
-    firstName,
-    lastName,
-    displayName,
-    displayPicture,
-    ssn,
-    createdAt,
-    updatedAt,
-  },
-  projection = {}
-) => {
-  let account = {},
-    where = {};
+export const findAccount = async ({ email, username }, projection = {}) => {
+  let account = {};
+  let where = {};
   // Mongoose.set("debug", true)
   where = _.chain({
     email,
     username,
-    status,
-    firstName,
-    lastName,
-    displayName,
-    displayPicture,
-    ssn,
-    createdAt,
-    updatedAt,
   })
     .omitBy(_.isUndefined)
     .value();
@@ -94,6 +72,29 @@ export const findAccount = async (
     throw new AccountNotFoundError();
   }
   return account;
+};
+
+/**
+ *
+ * @param {username: Username}
+ * @param {_id: Account ID}
+ * @returns accountDocument
+ */
+export const findAccounts = async ({ email, username }, projection = {}) => {
+  let accounts = [];
+  let where = {};
+  // Mongoose.set("debug", true)
+  where = _.chain({
+    email,
+    username,
+  })
+    .omitBy(_.isUndefined)
+    .value();
+  if (!_.isEmpty(where)) {
+    where = { $or: [{ email }, { username }] };
+    accounts = await Account.find(where, projection).lean().exec();
+  }
+  return accounts;
 };
 
 /**

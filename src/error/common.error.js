@@ -1,4 +1,4 @@
-import { BaseError, SystemError, UserAwarenessError } from './base.error';
+import { SystemError, UserAwarenessError } from './base.error';
 
 class ValidationError extends UserAwarenessError {
   constructor(errorMessage) {
@@ -6,9 +6,9 @@ class ValidationError extends UserAwarenessError {
   }
 }
 
-class RequiredError extends BaseError {
+class RequiredError extends UserAwarenessError {
   constructor(fields, got = undefined) {
-    super(`RequiredError: fields ${fields} but got ${got}`);
+    super(`RequiredError`, 400), `fields ${fields} but got ${got}`;
     this.fields = fields;
     this.got;
   }
@@ -19,10 +19,4 @@ class EnvNotSetError extends SystemError {
   }
 }
 
-class DoNothingError extends BaseError {
-  constructor(errorCode, errorMessage) {
-    super('DoNothingError', errorCode, errorMessage);
-  }
-}
-
-export { DoNothingError, EnvNotSetError, RequiredError, ValidationError };
+export { EnvNotSetError, RequiredError, ValidationError };
