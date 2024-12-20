@@ -14,10 +14,11 @@ export const canActivate = async (req, res, next) => {
     if (!token) {
       throw new UnauthorizedAccountError();
     }
-    const accountId = verifyAuthToken(token);
-    if (!accountId) {
+    const account = verifyAuthToken(token);
+    if (!account?._id) {
       throw new UnauthorizedAccountError();
     }
+    const accountId = account._id;
     if (accountId) {
       const account = await findAccountById(accountId);
       if (!account || account == {}) {
@@ -42,10 +43,10 @@ export const extractLoginInfo = async (req, res, next) => {
     if (!token) {
       throw new AnonymousError();
     }
-    const accountId = verifyAuthToken(token);
-    if (!accountId) {
+    if (!account?._id) {
       throw new InvalidAccountTokenError();
     }
+    const accountId = account._id;
     const account = await findAccountById(accountId);
     req.CURRENT_USERID = account._id;
     req.CURRENT_USERNAME = account.username;

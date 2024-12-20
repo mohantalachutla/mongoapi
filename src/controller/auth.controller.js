@@ -81,7 +81,7 @@ authRouter.post('/register', async (req, res, next) => {
       new ApiResponse(
         {
           ...account,
-          token: signAuthToken(account._id), //GetAuthToken(account._id) // encrypted uid
+          token: signAuthToken(account),
         },
         200,
         'Registration Successful'
@@ -134,7 +134,7 @@ authRouter.post('/login', async (req, res, next) => {
       new ApiResponse(
         {
           ...account,
-          token: signAuthToken(account._id), //GetAuthToken(account._id) // encrypted uid
+          token: signAuthToken(account), //GetAuthToken(account._id) // encrypted uid
         },
         200,
         'Login Successful'
@@ -157,7 +157,7 @@ authRouter.post('/account', extractLoginInfo, async (req, res, next) => {
     account = _.chain(account).omit('password').value();
     next({
       ...account,
-      token: signAuthToken(account._id), //GetAuthToken(account._id) // encrypted uid
+      token: signAuthToken(account), //GetAuthToken(account._id) // encrypted uid
     });
   } catch (err) {
     if (err instanceof InvalidAccountTokenError) {
