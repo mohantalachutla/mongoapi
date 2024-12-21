@@ -43,17 +43,29 @@ export const extractLoginInfo = async (req, res, next) => {
     if (!token) {
       throw new AnonymousError();
     }
+    const account = verifyAuthToken(token);
     if (!account?._id) {
-      throw new InvalidAccountTokenError();
+      throw new UnauthorizedAccountError();
     }
     const accountId = account._id;
-    const account = await findAccountById(accountId);
-    req.CURRENT_USERID = account._id;
-    req.CURRENT_USERNAME = account.username;
-    next();
+    if (accountId) {
+      const account = await findAccountById(accountId);
+      if (!account || account == {}) {
+        throw new UnauthorizedAccountError();
+      }
+      if (account && account != {}) {
+        req.CURRENT_USERID = new String(account._id).valueOf();
+        req.CURRENT_USERNAME = new String(account.username).valueOf();
+        next();
+      }
+    }
   } catch (err) {
-    if (err instanceof AnonymousError) {
-      next();
+    if (
+      err instanceof AnonymousError ||
+      err instanceof UnauthorizedAccountError ||
+      err instanceof InvalidAccountTokenError
+    ) {
+      next(); // bypass to next middleware
     } else {
       next(err);
     }
