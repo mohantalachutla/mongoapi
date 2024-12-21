@@ -1,3 +1,4 @@
 #!/usr/bin/env sh
 echo 'Running husky pre-push\n\n'
 npm run test
+npm run build
