@@ -2,6 +2,7 @@ import { RequiredError } from '../error/common.error';
 import { AccountNotFoundError } from '../error/account.error';
 import { Account } from '../model/account.model';
 import _ from 'lodash';
+import { isEmpty } from '../util/lang.util';
 
 // Keep password separate
 /**
@@ -65,10 +66,10 @@ export const findAccount = async ({ email, username }, projection = {}) => {
   })
     .omitBy(_.isUndefined)
     .value();
-  if (!_.isEmpty(where)) {
+  if (!isEmpty(where)) {
     account = await Account.findOne(where, projection).lean().exec();
   }
-  if (_.isEmpty(account)) {
+  if (isEmpty(account)) {
     throw new AccountNotFoundError();
   }
   return account;
@@ -90,7 +91,7 @@ export const findAccounts = async ({ email, username }, projection = {}) => {
   })
     .omitBy(_.isUndefined)
     .value();
-  if (!_.isEmpty(where)) {
+  if (!isEmpty(where)) {
     where = { $or: [{ email }, { username }] };
     accounts = await Account.find(where, projection).lean().exec();
   }
@@ -143,13 +144,13 @@ export const findAccountAndPopulate = async (
   })
     .omitBy(_.isUndefined)
     .value();
-  if (!_.isEmpty(where)) {
+  if (!isEmpty(where)) {
     account = await Account.findOne(where, projection)
       .populate('activities')
       .lean()
       .exec();
   }
-  if (_.isEmpty(account)) {
+  if (isEmpty(account)) {
     throw new AccountNotFoundError();
   }
   return account;
@@ -172,7 +173,7 @@ export const getSystemAccount = async () => {
  */
 
 export const getBalance = async (account) => {
-  if (!account && !_.isEmpty(account)) {
+  if (!account && !isEmpty(account)) {
     throw new RequiredError(['account']);
   }
   let balance = 0;

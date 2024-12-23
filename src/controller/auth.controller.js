@@ -22,6 +22,7 @@ import {
 import { ApiResponse } from '../model/common/ApiResponse';
 import { registerValidator } from '../validator/register.validator';
 import { loginValidator } from '../validator/login.validator';
+import { isEmpty } from '../util/lang.util';
 
 const authRouter = express.Router();
 
@@ -49,7 +50,7 @@ authRouter.post('/register', async (req, res, next) => {
         email: input.email,
         username: input.username,
       });
-      if (!_.isEmpty(accounts))
+      if (!isEmpty(accounts))
         return next(
           new ApiResponse({}, 400, 'Email or Username is already in use')
         );
