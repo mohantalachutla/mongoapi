@@ -1,4 +1,4 @@
-import { SystemError, UserAwarenessError } from './base.error';
+import { SystemError, UserAwarenessError, BaseError } from './base.error';
 
 class ValidationError extends UserAwarenessError {
   constructor(errorMessage) {
@@ -18,5 +18,9 @@ class EnvNotSetError extends SystemError {
     super(`${message} EnvNotSetError`);
   }
 }
-
-export { EnvNotSetError, RequiredError, ValidationError };
+class DBError extends BaseError {
+  constructor(errorMessage = 'Something went wrong') {
+    super('DBError', 500, errorMessage);
+  }
+}
+export { EnvNotSetError, RequiredError, ValidationError, DBError };

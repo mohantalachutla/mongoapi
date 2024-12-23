@@ -1,5 +1,7 @@
 import { App } from '../model/app.model';
 import _ from 'lodash';
+import { isEmpty } from '../util/lang.utils';
+('lodash');
 
 /**
  *
@@ -8,18 +10,19 @@ import _ from 'lodash';
  * @param {status: Status}
  * @returns app
  */
-export const findApp = async ({ name, url, status }, projection = {}) => {
+export const findApp = async ({ name, url, env, status }, projection = {}) => {
   let app = {};
   let where = {};
   // Mongoose.set("debug", true)
   where = _.chain({
     name,
     url,
+    env,
     status,
   })
     .omitBy(_.isUndefined)
     .value();
-  if (!_.isEmpty(where)) {
+  if (!isEmpty(where)) {
     app = await App.findOne(where, projection).lean().exec();
   }
   return app;
@@ -35,7 +38,7 @@ export const findApps = async ({ status }, projection = {}) => {
   where = _.chain({
     status,
   })
-    .omitBy(_.isEmpty)
+    .omitBy(isEmpty)
     .value();
   // Mongoose.set("debug", true)
   apps = await App.find(where, projection).lean().exec();
@@ -68,7 +71,7 @@ export const createApp = async ({
   browserslist,
   keywords,
 }) => {
-  const account = new App(
+  const app = new App(
     _.chain({
       name,
       url,
@@ -93,7 +96,7 @@ export const createApp = async ({
       .omitBy(_.isUndefined)
       .value()
   );
-  return await account.save();
+  return await app.save();
 };
 
 /**
@@ -155,19 +158,22 @@ export const updateApp = async ({
  * @returns app
  * @description creates an new app
  */
-export const updateStatus = async ({ name, status }) => {
+export const updateStatus = async ({
+  name,
+  version,
+  url,
+  env,
+  status = 'inactive',
+}) => {
   const input = _.chain({
     name,
-    status: status || 'inactive',
+    version,
+    env,
+    url,
   })
-    .omitBy(_.isUndefined)
+    .omitBy(isEmpty)
     .value();
-  return await App.updateOne(
-    { name: input.name },
-    { $set: { status: input.status } }
-  )
-    .lean()
-    .exec();
+  return await App.updateOne(input, { $set: { status } }).lean().exec();
 };
 
 /**

@@ -6,12 +6,10 @@ const _appSchema = Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
   },
   url: {
     type: String,
     required: true,
-    unique: true,
   },
   status: {
     type: String,
@@ -29,11 +27,11 @@ const _appSchema = Schema({
   env: {
     type: String,
     required: true,
-    enum: ['development', 'production'],
+    enum: ['development', 'production', 'test', 'staging'],
   },
   version: {
     type: String,
-    default: 'NA',
+    default: '1.0.0',
   },
   description: {
     type: String,
@@ -88,5 +86,7 @@ const _appSchema = Schema({
     default: Date.now(),
   },
 });
+// enforce composite index
+_appSchema.index({ name: 1, url: 1, env: 1, version: 1 }, { unique: true });
 
 export const appSchema = _appSchema;
