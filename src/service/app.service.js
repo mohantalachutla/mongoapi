@@ -32,8 +32,12 @@ export const findApp = async ({ name, url, status }, projection = {}) => {
 export const findApps = async ({ status }, projection = {}) => {
   let apps = [];
   let where = {};
+  where = _.chain({
+    status,
+  })
+    .omitBy(_.isEmpty)
+    .value();
   // Mongoose.set("debug", true)
-  where = _.chain({ status }).omitBy(_.isUndefined).value();
   apps = await App.find(where, projection).lean().exec();
   return apps;
 };
