@@ -68,18 +68,11 @@ app.use('/api', apiRouter);
 app.use(controllerTerminator);
 
 //Environment variables
-if (
-  !(
-    process.env.HOST &&
-    process.env.PORT &&
-    process.env.MONGO_DB_URL &&
-    getImageLocation()
-  )
-) {
+if (!(process.env.PORT && process.env.MONGO_DB_URL && getImageLocation())) {
   throw new EnvNotSetError();
 }
 
-const { PORT, MONGO_DB_URL, HOST } = process.env;
+const { PORT, MONGO_DB_URL } = process.env;
 let SYSTEM,
   notATopLevelAwait = async () => {
     const session = await db(MONGO_DB_URL);
@@ -108,7 +101,7 @@ let SYSTEM,
         throw new SystemError(
           'ServerError',
           500,
-          `Connection not established at  ${HOST}:${PORT}`
+          `Connection not established.`
         );
       }
       console.info(`Server running at port : ${PORT}`);
