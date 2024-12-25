@@ -22,6 +22,7 @@ import { controllerTerminator } from './middleware/controllerTerminator.middlewa
 import { getSystemAccount } from './service/account.service';
 import { SystemError } from './error/base.error';
 import { getImageLocation } from './util/image.util';
+import initiateMigration from './migration/migrate';
 
 const app = express(),
   corsOptions = {
@@ -84,6 +85,8 @@ let SYSTEM,
         `Connection not established with ${MONGO_DB_URL}`
       );
     }
+
+    await initiateMigration();
 
     SYSTEM = await getSystemAccount();
     if (!SYSTEM?._id) {

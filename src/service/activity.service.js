@@ -1,5 +1,5 @@
 import { RequiredError } from '../error/common.error';
-import { Activity } from '../model/activity.model';
+import Activity from '../model/activity.model';
 
 /**
  *

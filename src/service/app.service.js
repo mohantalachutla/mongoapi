@@ -1,4 +1,4 @@
-import { App } from '../model/app.model';
+import App from '../model/app.model';
 import _ from 'lodash';
 import { isEmpty } from '../util/lang.utils';
 ('lodash');

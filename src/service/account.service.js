@@ -1,6 +1,7 @@
+import process from 'process';
 import { RequiredError } from '../error/common.error';
 import { AccountNotFoundError } from '../error/account.error';
-import { Account } from '../model/account.model';
+import Account from '../model/account.model';
 import _ from 'lodash';
 import { isEmpty } from '../util/lang.utils';
 
@@ -158,9 +159,18 @@ export const findAccountAndPopulate = async (
 
 /**
  * @description fetches system account
- * @returns SYSTEM
+ * @returns system account
  */
 export const getSystemAccount = async () => {
+  const email = process.env.SYSTEM_EMAIL;
+  return await findAccount({ email });
+};
+
+/**
+ * @description Generates system account if not exist
+ * @returns system account
+ */
+export const createSystemAccountIfNotExist = async () => {
   const username = 'SYSTEM';
   return await findAccount({ username });
 };

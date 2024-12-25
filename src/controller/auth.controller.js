@@ -1,7 +1,7 @@
 import express from 'express';
 import _ from 'lodash';
 
-import { Account } from '../model/account.model';
+import Account from '../model/account.model';
 
 import { signAuthToken } from '../util/auth.util';
 import { extractLoginInfo } from '../middleware/auth.middleware';

@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 const { Buffer } = Schema.Types;
 
-import { Activity } from './activity.model.js';
+import Activity from './activity.model.js';
 
 /**
  * _id === account._id

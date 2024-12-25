@@ -57,3 +57,4 @@ others
 .timetracker
 images
 lib
+**/migration/data/*
