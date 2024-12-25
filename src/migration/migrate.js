@@ -22,6 +22,8 @@ const initiateMigration = async () => {
   let data = {};
   console.log('Attempting migration');
   try {
+    const STORE_LOCATION = getStoreLocation();
+    console.log('Migration store location:', STORE_LOCATION);
     // Import models
     modal = {
       account: require('../model/account.model.js'),
@@ -29,12 +31,12 @@ const initiateMigration = async () => {
       activity: require('../model/activity.model.js'),
     };
     try {
-      const files = await fs.readdir(getStoreLocation(), {
+      const files = await fs.readdir(STORE_LOCATION, {
         withFileTypes: true,
       });
       for (const file of files) {
         if (file.isFile() && file.name.endsWith('.json')) {
-          const filePath = path.join(getStoreLocation(), file.name);
+          const filePath = path.join(STORE_LOCATION, file.name);
           const content = await fs.readFile(filePath, 'utf-8');
           const fileData = JSON.parse(content);
           data[file.name.replace('.json', '')] = fileData.default || fileData; // Handle ES module exports
@@ -43,22 +45,6 @@ const initiateMigration = async () => {
     } catch (err) {
       console.error(err);
     }
-    // // Define paths for JSON files
-    // const dataFiles = {
-    //   account: path.resolve(__dirname, './data/account.json'),
-    //   app: path.resolve(__dirname, './data/app.json'),
-    //   activity: path.resolve(__dirname, './data/activity.json'),
-    // };
-
-    // Load JSON data if files exist
-    // await Promise.all(
-    //   Object.entries(dataFiles).map(async ([key, filePath]) => {
-    //     if (await checkFileExists(filePath)) {
-    //       const fileData = await import(filePath);
-    //       data[key] = fileData.default || fileData; // Handle ES module exports
-    //     }
-    //   })
-    // );
   } catch (err) {
     console.error('Error initializing migration:', err);
     return; // Exit migration on initialization failure
