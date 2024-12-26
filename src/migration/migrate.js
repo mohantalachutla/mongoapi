@@ -29,6 +29,7 @@ const initiateMigration = async () => {
       account: require('../model/account.model.js'),
       app: require('../model/app.model.js'),
       activity: require('../model/activity.model.js'),
+      product: require('../model/product.model.js'),
     };
     try {
       const files = await fs.readdir(STORE_LOCATION, {
