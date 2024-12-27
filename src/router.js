@@ -7,6 +7,7 @@ import { testRouter } from './controller/test.controller';
 import { appRouter } from './controller/app.controller';
 import { productRouter } from './controller/product.controller';
 import { wishlistRouter } from './controller/wishlist.controller';
+import { orderRouter } from './controller/order.controller';
 
 const apiRouter = express.Router();
 apiRouter.use('/test', testRouter);
@@ -15,5 +16,6 @@ apiRouter.use('/activity', activityRouter);
 apiRouter.use('/app', canActivate, appRouter);
 apiRouter.use('/product', canActivate, productRouter);
 apiRouter.use('/wishlist', canActivate, wishlistRouter);
+apiRouter.use('/order', canActivate, orderRouter);
 
 export default apiRouter;
