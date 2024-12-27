@@ -6,7 +6,11 @@ export const signAuthToken = (payload) =>
     {
       data: payload,
       iat: Date.now(),
-      exp: Date.now() / 1000 + 24 * 60 * 60 * 1000,
+      exp:
+        Date.now() / 1000 +
+        (process.env.JWT_EXPIRATION_IN_MIN
+          ? process.env.JWT_EXPIRATION_IN_MIN * 60 * 1000
+          : 24 * 60 * 60 * 1000),
     },
     process.env.JWT_SECRET
   );
