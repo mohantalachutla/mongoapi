@@ -5,6 +5,7 @@ import {
 } from '../error/account.error';
 import { findAccountById } from '../service/account.service';
 import { verifyAuthToken } from '../util/auth.util';
+import { isEmpty } from '../util/lang.utils';
 
 // Breaks the circuit if account not found
 export const canActivate = async (req, res, next) => {
@@ -14,21 +15,27 @@ export const canActivate = async (req, res, next) => {
     if (!token) {
       throw new UnauthorizedAccountError();
     }
-    const account = verifyAuthToken(token);
-    if (!account?._id) {
+    const decoded = verifyAuthToken(token);
+    if (
+      !decoded ||
+      !decoded.data ||
+      !decoded.data._id ||
+      !decoded.iat ||
+      !decoded.exp
+    ) {
       throw new UnauthorizedAccountError();
     }
-    const accountId = account._id;
+    if (decoded.data.exp < Date.now() / 1000) {
+      throw new UnauthorizedAccountError();
+    }
+    const accountId = decoded.data._id;
     if (accountId) {
       const account = await findAccountById(accountId);
-      if (!account || account == {}) {
+      if (isEmpty(account)) {
         throw new UnauthorizedAccountError();
       }
-      if (account && account != {}) {
-        req.CURRENT_USERID = new String(account._id).valueOf();
-        req.CURRENT_USERNAME = new String(account.username).valueOf();
-        next();
-      }
+      req.user = account;
+      next();
     }
   } catch (err) {
     next(err);
