@@ -38,6 +38,7 @@ export const canActivate = async (req, res, next) => {
       next();
     }
   } catch (err) {
+    console.error('canActivate:', err?.message);
     next(err);
   }
 };
