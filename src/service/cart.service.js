@@ -57,7 +57,10 @@ export const addToCart = async (
     return await createCart({ accountId, items });
   }
   await Cart.findByIdAndUpdate(cart._id, {
-    $set: { items, archivedItems },
+    $set: {
+      items: [...(cart.items || []), ...items],
+      archivedItems: [...(cart.archivedItems || []), ...archivedItems],
+    },
   })
     .lean()
     .exec();

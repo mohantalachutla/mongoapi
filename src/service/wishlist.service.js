@@ -67,8 +67,12 @@ export const updateWishlist = async (_id, { description, items }) => {
   if (isEmpty(wishlist)) {
     throw new Error('Wishlist not found');
   }
+  console.log({ wishlist });
   await Wishlist.findByIdAndUpdate(_id, {
-    $set: input,
+    $set: {
+      description: input.description,
+      items: [...(wishlist.items || []), ...(input.items || [])],
+    },
   })
     .lean()
     .exec();
