@@ -44,11 +44,11 @@ productRouter.post('/browse', async (req, res, next) => {
  * @param status Status
  * @returns ApiResponse
  */
-productRouter.post('/find', async (req, res, next) => {
-  const { fields } = req;
+productRouter.get('/', async (req, res, next) => {
+  const { params } = req;
 
   try {
-    const { name, type, subtype, status } = fields;
+    const { name, type, subtype, status } = params;
     try {
       let products = await findProduct({
         name,
@@ -69,7 +69,7 @@ productRouter.post('/find', async (req, res, next) => {
  * @description creates a product
  * @returns ApiResponse
  */
-productRouter.post('/create', async (req, res, next) => {
+productRouter.post('/', async (req, res, next) => {
   let product = {};
   const { fields } = req;
 
