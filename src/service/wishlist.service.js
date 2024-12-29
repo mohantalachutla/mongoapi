@@ -54,7 +54,7 @@ export const createWishlist = async ({
  * @requires _id
  * @param name, url, modules, events
  * @returns wishlist
- * @description updates an new wishlist
+ * @description adds to wishlist
  */
 export const updateWishlist = async (_id, { description, items }) => {
   const input = _.chain({
@@ -78,6 +78,7 @@ export const updateWishlist = async (_id, { description, items }) => {
     .exec();
   return await findWishlistById(_id);
 };
+// TODO: remove from wishlist
 
 /**
  * Deletes an wishlist

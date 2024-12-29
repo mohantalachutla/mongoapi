@@ -21,7 +21,7 @@ orderRouter.post('/browse', async (req, res, next) => {
   const { fields } = req;
 
   try {
-    const { accountId, status } = fields;
+    const { accountId = req.user._id, status } = fields;
     try {
       let orders = await findOrders(
         {

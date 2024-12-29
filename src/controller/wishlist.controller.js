@@ -74,6 +74,7 @@ wishlistRouter.post('/', async (req, res, next) => {
     fields.name = 'Wishlist';
   }
   fields.accountId = req.user._id;
+  console.log('fields', fields);
   try {
     const input = await wishlistValidator.validateAsync(fields);
     const wishlists = await findWishlists(input);
