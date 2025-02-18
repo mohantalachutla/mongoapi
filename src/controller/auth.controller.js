@@ -145,7 +145,7 @@ authRouter.post('/login', async (req, res, next) => {
     return next(err);
   }
 });
-authRouter.post('/account', extractLoginInfo, async (req, res, next) => {
+authRouter.get('/account', extractLoginInfo, async (req, res, next) => {
   const { CURRENTUSERID } = req;
   try {
     if (!CURRENTUSERID) {
